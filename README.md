@@ -19,7 +19,7 @@ Given a plain text file as command line parameter, the application group differe
 1. Launch the command in parent folder directory of source code `mvn spring-boot:run -Drun.arguments=<path-to-file>`
 
 ## Output example
-`2019-03-26 16:01:45 [main] INFO  c.j.w.WordCounterApplication - :::: STARTING WORDS COUNTER APPLICATION :::: 
+2019-03-26 16:01:45 [main] INFO  c.j.w.WordCounterApplication - :::: STARTING WORDS COUNTER APPLICATION :::: 
 2019-03-26 16:01:45 [main] DEBUG c.j.w.WordCounterApplication - Validating input params
 2019-03-26 16:01:45 [main] DEBUG c.j.w.WordCounterApplication - Validating if file exits in: D:\Trabajo\Proyectos\Personales\josemitd-word-counter\src\test\resources\documentA
 2019-03-26 16:01:45 [main] DEBUG c.j.w.service.WordCounterService - Counting words in file: D:\Trabajo\Proyectos\Personales\josemitd-word-counter\src\test\resources\documentA
@@ -83,4 +83,4 @@ Given a plain text file as command line parameter, the application group differe
 2019-03-26 16:01:46 [main] INFO  c.j.w.WordCounterApplication - what: 1
 2019-03-26 16:01:46 [main] INFO  c.j.w.WordCounterApplication - there: 1
 2019-03-26 16:01:46 [main] INFO  c.j.w.WordCounterApplication - until: 1
-2019-03-26 16:01:46 [main] INFO  c.j.w.WordCounterApplication - Started WordCounterApplication in 0.719 seconds (JVM running for 1.817)`
+2019-03-26 16:01:46 [main] INFO  c.j.w.WordCounterApplication - Started WordCounterApplication in 0.719 seconds (JVM running for 1.817)
