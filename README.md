@@ -10,10 +10,16 @@
 ## Funcionalities
 Given a plain text file as command line parameter, the application group different words and counts them. Result appears in console.
 
+## Configuration
+Its possible limit the size of input file. 
+**Default value its 2Mbits (2000000 bytes)**
+For edit, simply modify property "maximum-filesize" in application.properties file inside jar archifact.
+**Size must be expressed in bytes**
+
 ## RUN APPLICATION
 1. Build with maven goal: `mvn clean package` 
-2. Move the generated archifact (josemitd-word-counter-1.0.0.jar) to your prefered folder
-3. Running the artifact with `java -jar <path-to-folder>\josemitd-word-counter-1.0.0.jar <path-to-file>`
+2. Move the generated archifact (josemitd-word-counter-1.1.0.jar) to your prefered folder
+3. Running the artifact with `java -jar <path-to-folder>\josemitd-word-counter-1.1.0.jar <path-to-file>`
 
 ### From source code
 1. Launch the command in parent folder directory of source code `mvn spring-boot:run -Drun.arguments=<path-to-file>`

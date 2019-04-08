@@ -1,6 +1,8 @@
 package com.jmtebar.wordcounter;
 
+import com.jmtebar.wordcounter.exception.WordCounterException;
 import com.jmtebar.wordcounter.service.WordCounterService;
+import com.jmtebar.wordcounter.validator.InputParameterValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -17,77 +18,54 @@ import java.util.Map;
 @SpringBootApplication
 public class WordCounterApplication implements CommandLineRunner {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WordCounterApplication.class);
+
     @Autowired
     private WordCounterService wordCounterService;
 
-    /* Logger */
-    private static final Logger LOGGER = LoggerFactory.getLogger(WordCounterApplication.class);
+    @Autowired
+    private InputParameterValidator inputParameterValidator;
 
     @Value("${test.enviroment}")
     private Boolean testEnviroment;
 
-    /* Spring boot starting method */
-    public static void main(String[] args) {
+
+    public static void main(final String[] args) {
         SpringApplication app = new SpringApplication(WordCounterApplication.class);
         app.run(args);
     }
 
-    /* Application main method */
     @Override
-    public void run(String... args) throws Exception {
+    public void run(final String... args) {
 
         if (testEnviroment) {
             LOGGER.info(":::: STARTING WORDS COUNTER APPLICATION FOR TESTING :::: ");
         } else {
+
             LOGGER.info(":::: STARTING WORDS COUNTER APPLICATION :::: ");
-            Path inputFile = validateInputParameters(args);
-            Map<String, Long> result = wordCounterService.countWords(inputFile);
 
-            LOGGER.info(":::: PRINTING WORD COUNTING :::: ");
-            result.entrySet().stream().forEach(w -> LOGGER.info("{}: {}", w.getKey(), w.getValue()));
+            try {
+                inputParameterValidator.validateInputParameters(args);
 
+                Path pathFile = Paths.get(args[0]);
+                inputParameterValidator.validateInputFile(pathFile);
+
+                Map<String, Long> wordsCounted = wordCounterService.countWordsFrecuency(pathFile);
+                LOGGER.debug("Found {} words", wordsCounted.size());
+
+                Map<String, Long> wordsOrdered = wordCounterService.sortWordsDescending(wordsCounted);
+
+                LOGGER.info(":::: PRINTING WORD COUNTING :::: ");
+                wordsOrdered.entrySet().stream().forEach(wordCount -> LOGGER.info("{}: {}", wordCount.getKey(),
+                        wordCount.getValue()));
+
+            } catch (WordCounterException wce) {
+                LOGGER.error(":::: AN ERROR HAS OCCURRED :::: ");
+                LOGGER.error("{} - {}", wce.getErrorCode(), wce.getErrorCode().getErrorMessage());
+            } finally {
+                LOGGER.info("Closing application.");
+                System.exit(0);
+            }
         }
     }
-
-    /**
-     * Check if file exits and return it.
-     * @param path
-     * @return
-     */
-    private static Path validateFile(String path) {
-        LOGGER.debug("Validating if file exits in: {}", path);
-
-        Path pathFile = Paths.get(path);
-
-        if (Files.notExists(pathFile)) {
-            LOGGER.error("File dont exits on path; {}.", path);
-            exitWithFailure();
-        }
-
-        return pathFile;
-    }
-
-    /**
-     * Validate input parameters
-     *
-     * @param args
-     */
-    private static Path validateInputParameters(String[] args) {
-
-        LOGGER.debug("Validating input params");
-
-        // Validating args
-        if (args.length != 1) {
-            LOGGER.error("Incorrect input params. Expected 1. Received {}.", args.length);
-            exitWithFailure();
-        }
-        return validateFile(args[0]);
-    }
-
-    /** Terminate program by errors. */
-    private static void exitWithFailure() {
-        LOGGER.info("System cant work correctly");
-        System.exit(0);
-    }
-
 }
