@@ -48,7 +48,6 @@ public class InputParameterValidator {
                 LOGGER.error("File dont exits on path; {}.", pathFile);
                 throw new WordCounterException(ErrorCode.FILE_NOT_EXISTS);
             }
-
             if (FileChannel.open(pathFile).size() > maxFileSize) {
                 LOGGER.error("File is bigger than {} bytes", maxFileSize);
                 throw new WordCounterException(ErrorCode.FILE_SIZE_ERROR);
